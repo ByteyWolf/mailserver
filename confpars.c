@@ -69,7 +69,17 @@ int parse_configs(struct poshta_config* cfg) {
     done_escapes:
         *dst = '\0';
 
-        printf("Key='%s' Value='%s'\n", key, value);
+        if (strcmp(key, "srv_addr") == 0) {
+            if (cfg->srv_addr) free(cfg->srv_addr);
+            cfg->srv_addr = strdup(value);
+        } else if (strcmp(key, "allow_linux_users") == 0) {
+            cfg->allow_linux_users = atoi(value);
+        } else if (strcmp(key, "mailroot") == 0) {
+            if (cfg->mailroot) free(cfg->mailroot);
+            cfg->mailroot = strdup(value);
+        } else {
+            fprintf(stderr, "Unknown key '%s' in config\n", key);
+        }
     }
     
     fclose(config_file);
